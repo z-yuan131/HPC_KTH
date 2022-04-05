@@ -10,7 +10,7 @@
 typedef double vect_t[DIM];
 
 /* function declaration */
-double compute_force(int n, double G, int q, vect_t *force, double *mass, vect_t *pos);
+void compute_force(int n, double G, int q, vect_t *force, double *mass, vect_t *pos);
 
 
 int main(int argc, char *argv[]) {
@@ -51,8 +51,10 @@ int main(int argc, char *argv[]) {
     for (int step = 0; step < nstep; step++){
       force = memset(force, 0, n*sizeof(vect_t));
       for (int q = 0; q < n; q++){
+        
+        compute_force(n, G, q, force, mass, pos);
 
-        force[q][0], force[q][1] = compute_force(n, G, q, force, mass, pos);
+
 
         //paticle mover
         pos[q][0] += dt*vel[q][0];
@@ -60,7 +62,6 @@ int main(int argc, char *argv[]) {
         vel[q][0] += dt/mass[q]*force[q][0];
         vel[q][1] += dt/mass[q]*force[q][1];
 
-        //printf("%f,%f\n", vel[q][0],vel[q][1]);
 
       }
       //exit(1);
@@ -70,11 +71,11 @@ int main(int argc, char *argv[]) {
 }
 
 
-double compute_force(int n, double G, int q, vect_t *force, double *mass, vect_t *pos){
+void compute_force(int n, double G, int q, vect_t *force, double *mass, vect_t *pos){
   //printf("%f\n", mass[q]);
   double dist_cube, x_diff, y_diff, forceqk[2];
   for (int p = 0; p < n; p++){
-    if (p >= q){
+    if (p > q){
       x_diff = pos[q][0] - pos[p][0];
       y_diff = pos[q][1] - pos[p][1];
       dist_cube = pow(sqrt(x_diff * x_diff + y_diff * y_diff) , 3);
@@ -89,6 +90,6 @@ double compute_force(int n, double G, int q, vect_t *force, double *mass, vect_t
       force[p][1] -= forceqk[1];
     }
   }
-  return force[q][0],force[q][1];
+  //return force;
 }
     //
