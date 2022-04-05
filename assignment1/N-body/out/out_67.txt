@@ -1,0 +1,12 @@
+# started on Tue Apr  5 14:42:29 2022
+
+
+ Performance counter stats for './a.out 0.05 1':
+
+    10,067,915,485      instructions:u            #    1.88  insn per cycle                                            
+     5,368,552,337      cycles:u                                                    
+         8,998,372      L1-dcache-load-misses:u   #    0.27% of all L1-dcache hits  
+     3,339,430,557      L1-dcache-loads:u                                           
+
+       1.653167477 seconds time elapsed
+

@@ -1,0 +1,5 @@
+salloc --nodes=1 -t 02:00:00 -A edu22.DD2356 -p shared
+
+perf stat -e instructions,cycles,L1-dcache-load-misses,L1-dcache-loads ./exe
+
+module swap PrgEnv-cray PrgEnv-gnu
