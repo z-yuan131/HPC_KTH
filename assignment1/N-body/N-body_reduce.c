@@ -72,14 +72,21 @@ int main(int argc, char *argv[]) {
 
 double compute_force(int n, double G, int q, vect_t *force, double *mass, vect_t *pos){
   //printf("%f\n", mass[q]);
-  double dist_cube, x_diff, y_diff;
+  double dist_cube, x_diff, y_diff, forceqk[2];
   for (int p = 0; p < n; p++){
-    if (p != q){
+    if (p >= q){
       x_diff = pos[q][0] - pos[p][0];
       y_diff = pos[q][1] - pos[p][1];
       dist_cube = pow(sqrt(x_diff * x_diff + y_diff * y_diff) , 3);
-      force[q][0] -= G*mass[q]*mass[p]/dist_cube * x_diff;
-      force[q][1] -= G*mass[q]*mass[p]/dist_cube * y_diff;
+
+      forceqk[0] = G*mass[q]*mass[p]/dist_cube * x_diff;
+      forceqk[1] = G*mass[q]*mass[p]/dist_cube * y_diff;
+
+
+      force[q][0] += forceqk[0];
+      force[q][1] += forceqk[1];
+      force[p][0] -= forceqk[0];
+      force[p][1] -= forceqk[1];
     }
   }
   return force[q][0],force[q][1];
