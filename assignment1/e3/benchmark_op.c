@@ -20,9 +20,26 @@ int main(){
   t1 = mysecond();
   for(i = 0; i < N; i++)
     c[i] = a[i]*b[i];
+  c[0] = 1;
   t2 = mysecond();
-  printf("%f",t2-t1);
+  //printf("%f",t2-t1);
 
+// opt
+  double totalt;
+  d[0] = 100;
+  for (j = 0; j < 100; j++){
+  t1 = mysecond();
+  for(i = 0; i < N; i++)
+    c[i] = a[i]*b[i];
+  t2 = mysecond();
+  d[1] = t2 - t1;
+  if (d[1] < d[0]){d[0] = t2 -t1;}
+  totalt += t2 - t1 ;
+  }
+  totalt = totalt/100;
+
+  //printf("Execution time: %11.8f s\n", totalt);
+  printf("%f",totalt);  
 return 0;
 }
 
