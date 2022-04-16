@@ -1,0 +1,12 @@
+#!/bin/bash -l
+#SBATCH -A edu22.DD2356
+#SBATCH -J N-body_2000
+#SBATCH -t 30:00
+#SBATCH -p shared
+#SBATCH --nodes=1
+#SBATCH -e error_file.e
+#SBATCH -o output_file.o
+
+module swap PrgEnv-cray PrgEnv-gnu
+
+srun -n 1 bash bash.sh

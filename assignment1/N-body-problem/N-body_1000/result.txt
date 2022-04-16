@@ -1,0 +1,27 @@
+# started on Tue Apr  5 20:46:25 2022
+
+
+
+
+
+ Performance counter stats for './a.out 0.05 100':
+
+
+
+    22,300,318,487      instructions:u            #    1.78  insn per cycle                                            
+
+    12,518,033,767      cycles:u                                                    
+
+        31,878,892      L1-dcache-load-misses:u   #    0.40% of all L1-dcache hits  
+
+     7,924,387,407      L1-dcache-loads:u                                           
+
+
+
+       3.711893483 seconds time elapsed
+
+average elasps time
+
+3.8566087441400008
+max = 4.917935299
+min = 3.702299423

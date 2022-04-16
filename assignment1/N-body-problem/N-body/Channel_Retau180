@@ -1,0 +1,19 @@
+#!/bin/bash -l
+#SBATCH -A 2020-3-5
+#SBATCH -J Channel_Retau180
+#SBATCH -t 5:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=2
+#SBATCH --gres=gpu:K80:2
+#SBATCH -e error_file.e
+#SBATCH -o output_file.o
+
+source ~/.bashrc.conda.tegner
+conda activate /cfs/klemming/nobackup/z/zhenyang/conda-dirs/envs/pyfr-tegner
+module add metis/5.1.0-gcc-8.2.0-shared
+module add cuda/10.0
+
+# pyfr import untitled.msh mesh.pyfrm 
+# pyfr partition 2 mesh_channel.pyfrm ./
+time mpirun -np 2 pyfr run -b cuda -p mesh_channel.pyfrm channel_Retau180.ini
+#time mpirun -np 2 pyfr restart -b cuda -p mesh_channel.pyfrm channel_900.00.pyfrs channel_Retau180.ini
