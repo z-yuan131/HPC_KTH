@@ -1,0 +1,99 @@
+1 Threads
+number of threads=1
+Sum_serial = 5000335.260518 
+time_serial = 0.041179
+Sum_para_for = 5000335.260518 
+time_para_for = 0.033514
+Sum_critical = 5000335.260518 
+time_critical = 0.033380
+Sum_para_local = 5000335.260518 
+time_para_local = 0.033336
+ 
+2 Threads
+number of threads=2
+Sum_serial = 5000335.260518 
+time_serial = 0.040159
+Sum_para_for = 3025424.419639 
+time_para_for = 0.060269
+Sum_critical = 5000335.260518 
+time_critical = 0.033403
+Sum_para_local = 5000335.260518 
+time_para_local = 0.056325
+ 
+4 Threads
+number of threads=4
+Sum_serial = 5000335.260518 
+time_serial = 0.040224
+Sum_para_for = 1630123.833768 
+time_para_for = 0.057329
+Sum_critical = 5000335.260518 
+time_critical = 0.033587
+Sum_para_local = 5000335.260518 
+time_para_local = 0.051967
+ 
+8 Threads
+number of threads=8
+Sum_serial = 5000335.260518 
+time_serial = 0.033517
+Sum_para_for = 927591.732746 
+time_para_for = 0.054074
+Sum_critical = 5000335.260518 
+time_critical = 0.033589
+Sum_para_local = 5000335.260518 
+time_para_local = 0.041909
+ 
+16 Threads
+number of threads=16
+Sum_serial = 5000335.260518 
+time_serial = 0.035725
+Sum_para_for = 483555.679113 
+time_para_for = 0.053016
+Sum_critical = 5000335.260518 
+time_critical = 0.033801
+Sum_para_local = 5000335.260518 
+time_para_local = 0.043766
+ 
+20 Threads
+number of threads=20
+Sum_serial = 5000335.260518 
+time_serial = 0.035287
+Sum_para_for = 349322.569512 
+time_para_for = 0.052282
+Sum_critical = 5000335.260518 
+time_critical = 0.033796
+Sum_para_local = 5000335.260518 
+time_para_local = 0.031449
+ 
+24 Threads
+number of threads=24
+Sum_serial = 5000335.260518 
+time_serial = 0.033799
+Sum_para_for = 297344.033856 
+time_para_for = 0.052058
+Sum_critical = 5000335.260518 
+time_critical = 0.034066
+Sum_para_local = 5000335.260518 
+time_para_local = 0.028983
+ 
+28 Threads
+number of threads=28
+Sum_serial = 5000335.260518 
+time_serial = 0.034710
+Sum_para_for = 256700.298594 
+time_para_for = 0.052627
+Sum_critical = 5000335.260518 
+time_critical = 0.034098
+Sum_para_local = 5000335.260518 
+time_para_local = 0.024129
+ 
+32 Threads
+number of threads=32
+Sum_serial = 5000335.260518 
+time_serial = 0.034024
+Sum_para_for = 226677.571722 
+time_para_for = 0.053523
+Sum_critical = 5000335.260518 
+time_critical = 0.034267
+Sum_para_local = 5000335.260518 
+time_para_local = 0.022584
+ 
