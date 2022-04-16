@@ -1,0 +1,4 @@
+gcc/g++ –fopenmp hello_world.c  #gcc
+icc/icpc –openmp hello_world.c #intel (linux)
+cc –openmp hello_world.c #Cray
+gcc-11 -fopenmp hello_world_openmp.c #macos, gcc = 11
