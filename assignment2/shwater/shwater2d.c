@@ -73,7 +73,7 @@ void laxf_scheme_2d(double *Q, double **ffx, double **ffy, double **nFx, double 
   int i, j, k;
 
   /* Calculate and update fluxes in the x-direction */
-  #pragma omp for private(nFx,ffx)
+  #pragma omp for private(i,j,k,nFx,ffx)
   for (i = 1; i < n; i++) {
     fx(Q, ffx, m, n, i);
     for (j = 1; j < m; j++)
@@ -86,7 +86,7 @@ void laxf_scheme_2d(double *Q, double **ffx, double **ffy, double **nFx, double 
   }
 
   /* Calculate and update fluxes in the y-direction */
-  #pragma omp for private(nFy,ffy)
+  #pragma omp for private(i,j,k,nFy,ffy)
   for (i = 1; i < m; i++) {
     fy(Q, ffy, m, n, i);
     for (j = 1; j < n; j++)
@@ -113,10 +113,10 @@ void solver(double *Q, double **ffx, double **ffy, double **nFx, double **nFy,
 
   steps = ceil(tend / dt);
 
-  #pragma omp parallel
-  {
-    for (i = 0, time = 0.0; i < steps; i++, time += dt) {
 
+  for (i = 0, time = 0.0; i < steps; i++, time += dt) {
+    #pragma omp parallel
+    {
       /* Apply boundary condition */
       #pragma omp for
       for (j = 1; j < n - 1 ; j++) {
@@ -142,8 +142,8 @@ void solver(double *Q, double **ffx, double **ffy, double **nFx, double **nFy,
     //#pragma omp master
     laxf_scheme_2d(Q, ffx, ffy, nFx, nFy, m, n, dx, dy, dt);
 
-    }
   }
+ }
 
 }
 
