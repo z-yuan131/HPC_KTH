@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <omp.h>
 
-#define N 100000
-#define MAX_THREADS 4
+#define N 1000000
+#define MAX_THREADS 2
 
 typedef struct sum_opt{
   double sum;
@@ -145,22 +145,22 @@ int main(){
 
   // serail part
   sum_s = serial_sum(input, N);
-  //printf("serial result is %f \n",sum_s);
+  printf("serial result is %f \n",sum_s);
 
   // parallel part 1:
   sum_p1 = omp_sum(input, N);
-  //printf("omp for result is %f \n",sum_p1);
+  printf("omp for result is %f \n",sum_p1);
 
   // parallel part 2:
   sum_p2 = omp_critical_sum(input, N);
-  //printf("omp critical result is %f \n",sum_p2);
+  printf("omp critical result is %f \n",sum_p2);
 
   // parallel part 3:
   sum_p3 = omp_local_sum(input, N);
-  //printf("omp local result is %f \n",sum_p3);
+  printf("omp local result is %f \n",sum_p3);
 
   // parallel part 4:
   sum_p4 = omp_opt_local_sum(input, N);
-  //printf("omp local opt result is %f \n",sum_p4);
+  printf("omp local opt result is %f \n",sum_p4);
   return 0;
 }
