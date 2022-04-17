@@ -41,12 +41,14 @@ void fx(double *Q, double **fq, int m, int n, int j) {
   int i;
   const double g = 9.81;
 
+  #pragma omp for
   for (i = 0; i < m; i++) {
     fq[0][i] = Q(1, i, j);
     fq[1][i] = (pow(Q(1, i, j), 2) / Q(0, i, j))  +
       (g * pow(Q(0, i, j), 2)) / 2.0;
     fq[2][i] = (Q(1, i, j) * Q(2, i, j)) / Q(0, i, j);
   }
+  //#pragma omp barrier
 
 }
 
@@ -55,7 +57,7 @@ void fy(double *Q, double **fq, int m, int n, int i) {
   int j;
   const double g= 9.81;
 
-  //#pragma omp for
+  #pragma omp for
   for (j = 0; j < n; j++) {
     fq[0][j] = Q(2, i, j);
     fq[1][j] = (Q(1, i, j) * Q(2, i, j)) / Q(0, i, j);
@@ -78,12 +80,12 @@ void laxf_scheme_2d(double *Q, double **ffx, double **ffy, double **nFx, double
   //#pragma omp for private(ffx,nFx)
   for (i = 1; i < n; i++) {
     fx(Q, ffx, m, n, i);
-    //#pragma omp for
+    #pragma omp for
     for (j = 1; j < m; j++)
       for (k = 0; k < cell_size;  k++)
         nFx[k][j] = 0.5 * ((ffx[k][j-1] + ffx[k][j]) - dx/dt * (Q(k, j, i) - Q(k, j-1, i)));
-    //#pragma omp barrier
-    //#pragma omp for
+    #pragma omp barrier
+    #pragma omp for
     for (j = 1; j < m-1; j++)
       for (k = 0; k < cell_size;  k++)
         Q(k, j, i) = Q(k, j, i)  - dt/dx * ((nFx[k][j+1] - nFx[k][j]));
@@ -94,12 +96,12 @@ void laxf_scheme_2d(double *Q, double **ffx, double **ffy, double **nFx, double
   //#pragma omp for private(ffy, nFy)
   for (i = 1; i < m; i++) {
     fy(Q, ffy, m, n, i);
-    //#pragma omp for
+    #pragma omp for
     for (j = 1; j < n; j++)
       for (k = 0; k < cell_size; k++)
         nFy[k][j] = 0.5 * ((ffy[k][j-1] + ffy[k][j]) - dy/dt * (Q(k, i, j) - Q(k, i, j -1)));
-    //#pragma omp barrier
-    //#pragma omp for
+    #pragma omp barrier
+    #pragma omp for
     for (j = 1; j <  n-1; j++)
       for (k = 0; k < cell_size; k++)
         Q(k,i,j) = Q(k,i,j) -  dt/dy * ((nFy[k][j+1]  -  nFy[k][j]));
@@ -130,6 +132,8 @@ void solver(double *Q, double **ffx, double **ffy, double **nFx, double **nFy,
   	         Q(k, m-1, j) = bc_mask[k] *  Q(k, m-2, j);
         }
       }
+
+      #pragma omp barrier
 
       #pragma omp for
       for (j = 0; j < m; j++)  {
