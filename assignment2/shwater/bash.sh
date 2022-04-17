@@ -7,7 +7,7 @@ do
 	./a.out > out_$i.txt
 done
 
-rm -r outfile
+#rm -r outfile
 mkdir outfile
 mv *.txt outfile
 #python post.py
