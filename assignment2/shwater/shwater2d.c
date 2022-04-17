@@ -68,37 +68,39 @@ void fy(double *Q, double **fq, int m, int n, int i) {
   This is the Lax-Friedrich's scheme for updating volumes
   Try to parallelize it in an efficient way!
 */
-void laxf_scheme_2d(double *Q, double **ffx, double **ffy, double **nFx, double **nFy,
-		    int m, int n, double dx, double dy, double dt) {
+void laxf_scheme_2d(double *Q, double **ffx, double **ffy, double **nFx, double
+**nFy,
+    int m, int n, double dx, double dy, double dt) {
   int i, j, k;
 
   /* Calculate and update fluxes in the x-direction */
-  #pragma omp for private(i,j,k,nFx,ffx)
+
   for (i = 1; i < n; i++) {
     fx(Q, ffx, m, n, i);
+    #pragma omp for
     for (j = 1; j < m; j++)
       for (k = 0; k < cell_size;  k++)
-	       nFx[k][j] = 0.5 * ((ffx[k][j-1] + ffx[k][j]) - dx/dt * (Q(k, j, i) - Q(k, j-1, i)));
+        nFx[k][j] = 0.5 * ((ffx[k][j-1] + ffx[k][j]) - dx/dt * (Q(k, j, i) - Q(k, j-1, i)));
+    #pragma omp for
     for (j = 1; j < m-1; j++)
       for (k = 0; k < cell_size;  k++)
-	       Q(k, j, i) = Q(k, j, i)  - dt/dx * ((nFx[k][j+1] - nFx[k][j]));
+        Q(k, j, i) = Q(k, j, i)  - dt/dx * ((nFx[k][j+1] - nFx[k][j]));
 
   }
-
   /* Calculate and update fluxes in the y-direction */
-  #pragma omp for private(i,j,k,nFy,ffy)
+  
   for (i = 1; i < m; i++) {
     fy(Q, ffy, m, n, i);
+    #pragma omp for
     for (j = 1; j < n; j++)
       for (k = 0; k < cell_size; k++)
-	       nFy[k][j] = 0.5 * ((ffy[k][j-1] + ffy[k][j]) - dy/dt * (Q(k, i, j) - Q(k, i, j -1)));
+        nFy[k][j] = 0.5 * ((ffy[k][j-1] + ffy[k][j]) - dy/dt * (Q(k, i, j) - Q(k, i, j -1)));
+    #pragma omp for
     for (j = 1; j <  n-1; j++)
       for (k = 0; k < cell_size; k++)
-	       Q(k,i,j) = Q(k,i,j) -  dt/dy * ((nFy[k][j+1]  -  nFy[k][j]));
+        Q(k,i,j) = Q(k,i,j) -  dt/dy * ((nFy[k][j+1]  -  nFy[k][j]));
   }
-
 }
-
 /*
   This is the main solver routine, parallelize this.
   But don't forget the subroutine laxf_scheme_2d
@@ -109,14 +111,13 @@ void solver(double *Q, double **ffx, double **ffy, double **nFx, double **nFy,
   double time;
   int i, j, k, steps;
 
-
+  omp_set_num_threads(2);
 
   steps = ceil(tend / dt);
 
-
-  for (i = 0, time = 0.0; i < steps; i++, time += dt) {
-    #pragma omp parallel
-    {
+  #pragma omp parallel
+  {
+    for (i = 0, time = 0.0; i < steps; i++, time += dt) {
       /* Apply boundary condition */
       #pragma omp for
       for (j = 1; j < n - 1 ; j++) {
@@ -141,7 +142,8 @@ void solver(double *Q, double **ffx, double **ffy, double **nFx, double **nFy,
     /* Update all volumes with the Lax-Friedrich's scheme */
     //#pragma omp master
     laxf_scheme_2d(Q, ffx, ffy, nFx, nFy, m, n, dx, dy, dt);
-
+    //printf("hello\n");
+    //exit(-1);
   }
  }
 
@@ -199,8 +201,8 @@ int main(int argc, char **argv) {
 
 
   /* Use m volumes in the x-direction and n volumes in the y-direction */
-  m = 1000;
-  n = 1000;
+  m = 100; //1000
+  n = 100;
 
   /*
     epsi      Parameter used for initial condition
@@ -277,7 +279,7 @@ int main(int argc, char **argv) {
 
 
   /* Uncomment this line if you want visualize the result in ParaView */
-  save_vtk(Q, x, y, m, n);
+  /*save_vtk(Q, x, y, m, n);*/
 
 
   free(Q);
