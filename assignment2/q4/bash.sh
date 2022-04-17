@@ -1,4 +1,5 @@
 cc -openmp DFTW_1.c
+#cc -openmp DFTW_2.c
 
 for i in {1,2,4,8,12,16,20,24,28,32}
 do

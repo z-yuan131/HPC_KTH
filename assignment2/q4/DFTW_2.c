@@ -87,8 +87,9 @@ int main(int argc, char *argv[]) {
 int DFT(int idft, double *xr, double *xi, double *Xr_o, double *Xi_o, int N) {
   #pragma omp parallel
   {
-    #pragma omp for
+    //#pragma omp for 
     for (int k = 0; k < N; k++) {
+      #pragma omp for reduction(+:Xr_o[k],Xi_o[k])
       for (int n = 0; n < N; n++) {
         // Real part of X[k]
         Xr_o[k] +=

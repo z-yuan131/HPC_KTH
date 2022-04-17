@@ -17,3 +17,4 @@ for i in range(len(a)):
 	perf[i] = next(f).split(' ')[-2]	
 
 print(perf[0]/perf)
+print(perf)
