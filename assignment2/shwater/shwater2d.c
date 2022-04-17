@@ -111,6 +111,10 @@ void solver(double *Q, double **ffx, double **ffy, double **nFx, double **nFy,
   double time;
   int i, j, k, steps;
 
+<<<<<<< HEAD
+=======
+  //omp_set_num_threads(2);
+>>>>>>> b382d6325f651d75b57602a879038f9ac4746f64
 
   steps = ceil(tend / dt);
 
