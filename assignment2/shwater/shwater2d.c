@@ -48,7 +48,7 @@ void fx(double *Q, double **fq, int m, int n, int j) {
       (g * pow(Q(0, i, j), 2)) / 2.0;
     fq[2][i] = (Q(1, i, j) * Q(2, i, j)) / Q(0, i, j);
   }
-  //#pragma omp barrier
+  #pragma omp barrier
 
 }
 
@@ -64,7 +64,7 @@ void fy(double *Q, double **fq, int m, int n, int i) {
     fq[2][j] = (pow(Q(2, i, j), 2) / Q(0, i, j))  +
       (g * pow(Q(0, i, j), 2)) / 2.0;
   }
-  //#pragma omp barrier
+  #pragma omp barrier
 }
 
 /*
@@ -89,7 +89,7 @@ void laxf_scheme_2d(double *Q, double **ffx, double **ffy, double **nFx, double
     for (j = 1; j < m-1; j++)
       for (k = 0; k < cell_size;  k++)
         Q(k, j, i) = Q(k, j, i)  - dt/dx * ((nFx[k][j+1] - nFx[k][j]));
-    //#pragma omp barrier
+    #pragma omp barrier
   }
 
   /* Calculate and update fluxes in the y-direction */
@@ -105,6 +105,7 @@ void laxf_scheme_2d(double *Q, double **ffx, double **ffy, double **nFx, double
     for (j = 1; j <  n-1; j++)
       for (k = 0; k < cell_size; k++)
         Q(k,i,j) = Q(k,i,j) -  dt/dy * ((nFy[k][j+1]  -  nFy[k][j]));
+    #pragma omp barrier
   }
 }
 /*
