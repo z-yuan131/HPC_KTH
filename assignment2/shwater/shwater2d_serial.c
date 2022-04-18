@@ -1,12 +1,12 @@
 /*
- *  shwater2d.c solves the two dimensional shallow water equations
+ *  shwater2d.c solves the two dimensional shallow water equations 
  *  using the Lax-Friedrich's scheme
  */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <omp.h>
+//#include <omp.h>
 #include <sys/time.h>
 
 #define cell_size 3
@@ -27,8 +27,8 @@ double gettime(void) {
 /* Check that the solution is finite */
 void validate(double *Q, int m, int n) {
   int i, j, k;
-  for (i = 0; i < n; i++)
-    for (j = 0; j < m; j++)
+  for (i = 0; i < n; i++) 
+    for (j = 0; j < m; j++) 
       for (k = 0; k < cell_size;  k++)
 	if (!isfinite(Q(k, j, i))) {
 	  fprintf(stderr, "Invalid solution\n");
@@ -37,19 +37,17 @@ void validate(double *Q, int m, int n) {
 }
 
 /* Flux function in the x-direction */
-void fx(double *Q, double **fq, int m, int n, int j) {
+void fx(double *Q, double **fq, int m, int n, int j) {  
   int i;
   const double g = 9.81;
 
-  #pragma omp for
   for (i = 0; i < m; i++) {
     fq[0][i] = Q(1, i, j);
-    fq[1][i] = (pow(Q(1, i, j), 2) / Q(0, i, j))  +
+    fq[1][i] = (pow(Q(1, i, j), 2) / Q(0, i, j))  + 
       (g * pow(Q(0, i, j), 2)) / 2.0;
     fq[2][i] = (Q(1, i, j) * Q(2, i, j)) / Q(0, i, j);
   }
-  #pragma omp barrier
-
+  
 }
 
 /* Flux function in the y-direction */
@@ -57,59 +55,52 @@ void fy(double *Q, double **fq, int m, int n, int i) {
   int j;
   const double g= 9.81;
 
-  #pragma omp for
   for (j = 0; j < n; j++) {
     fq[0][j] = Q(2, i, j);
-    fq[1][j] = (Q(1, i, j) * Q(2, i, j)) / Q(0, i, j);
-    fq[2][j] = (pow(Q(2, i, j), 2) / Q(0, i, j))  +
+    fq[1][j] = (Q(1, i, j) * Q(2, i, j)) / Q(0, i, j);    
+    fq[2][j] = (pow(Q(2, i, j), 2) / Q(0, i, j))  + 
       (g * pow(Q(0, i, j), 2)) / 2.0;
   }
-  #pragma omp barrier
 }
+
 
 /*
   This is the Lax-Friedrich's scheme for updating volumes
   Try to parallelize it in an efficient way!
 */
-void laxf_scheme_2d(double *Q, double **ffx, double **ffy, double **nFx, double
-**nFy,
-    int m, int n, double dx, double dy, double dt) {
+void laxf_scheme_2d(double *Q, double **ffx, double **ffy, double **nFx, double **nFy,
+		    int m, int n, double dx, double dy, double dt) {
   int i, j, k;
-
+    
   /* Calculate and update fluxes in the x-direction */
-  //#pragma omp for private(ffx,nFx)
   for (i = 1; i < n; i++) {
     fx(Q, ffx, m, n, i);
-    #pragma omp for
-    for (j = 1; j < m; j++)
-      for (k = 0; k < cell_size;  k++)
-        nFx[k][j] = 0.5 * ((ffx[k][j-1] + ffx[k][j]) - dx/dt * (Q(k, j, i) - Q(k, j-1, i)));
-    #pragma omp barrier
-    #pragma omp for
+    for (j = 1; j < m; j++) 
+      for (k = 0; k < cell_size;  k++) 
+	nFx[k][j] = 0.5 * ((ffx[k][j-1] + ffx[k][j]) -
+			   dx/dt * (Q(k, j, i) - Q(k, j-1, i)));
     for (j = 1; j < m-1; j++)
-      for (k = 0; k < cell_size;  k++)
-        Q(k, j, i) = Q(k, j, i)  - dt/dx * ((nFx[k][j+1] - nFx[k][j]));
-    #pragma omp barrier
+      for (k = 0; k < cell_size;  k++) 
+	Q(k, j, i) = Q(k, j, i)  - dt/dx * ((nFx[k][j+1] - nFx[k][j]));
+      
   }
 
   /* Calculate and update fluxes in the y-direction */
-  //#pragma omp for private(ffy, nFy)
   for (i = 1; i < m; i++) {
     fy(Q, ffy, m, n, i);
-    #pragma omp for
     for (j = 1; j < n; j++)
       for (k = 0; k < cell_size; k++)
-        nFy[k][j] = 0.5 * ((ffy[k][j-1] + ffy[k][j]) - dy/dt * (Q(k, i, j) - Q(k, i, j -1)));
-    #pragma omp barrier
-    #pragma omp for
-    for (j = 1; j <  n-1; j++)
+	nFy[k][j] = 0.5 * ((ffy[k][j-1] + ffy[k][j]) - 
+			   dy/dt * (Q(k, i, j) - Q(k, i, j -1)));
+    for (j = 1; j <  n-1; j++) 
       for (k = 0; k < cell_size; k++)
-        Q(k,i,j) = Q(k,i,j) -  dt/dy * ((nFy[k][j+1]  -  nFy[k][j]));
-    #pragma omp barrier
+	Q(k,i,j) = Q(k,i,j) -  dt/dy * ((nFy[k][j+1]  -  nFy[k][j]));
   }
+
 }
+
 /*
-  This is the main solver routine, parallelize this.
+  This is the main solver routine, parallelize this. 
   But don't forget the subroutine laxf_scheme_2d
 */
 void solver(double *Q, double **ffx, double **ffy, double **nFx, double **nFy,
@@ -117,45 +108,29 @@ void solver(double *Q, double **ffx, double **ffy, double **nFx, double **nFy,
   double bc_mask[3] = {1.0, -1.0, -1.0};
   double time;
   int i, j, k, steps;
+  
+  steps = ceil(tend / dt);  
+  for (i = 0, time = 0.0; i < steps; i++, time += dt) { 
 
-  //omp_set_num_threads(2);
-
-  steps = ceil(tend / dt);
-
-  #pragma omp parallel
-  {
-    for (i = 0, time = 0.0; i < steps; i++, time += dt) {
-      /* Apply boundary condition */
-      #pragma omp for
-      for (j = 1; j < n - 1 ; j++) {
-        for (k = 0; k < cell_size; k++) {
-  	         Q(k, 0, j) = bc_mask[k] *  Q(k, 1, j);
-  	         Q(k, m-1, j) = bc_mask[k] *  Q(k, m-2, j);
-        }
+    /* Apply boundary condition */
+    for (j = 1; j < n - 1 ; j++) {
+      for (k = 0; k < cell_size; k++) {
+	Q(k, 0, j) = bc_mask[k] *  Q(k, 1, j);
+	Q(k, m-1, j) = bc_mask[k] *  Q(k, m-2, j);
       }
+    }
 
-      #pragma omp barrier
-
-      #pragma omp for
-      for (j = 0; j < m; j++)  {
-        for (k = 0; k < cell_size; k++) {
-          	Q(k, j, 0) = bc_mask[k] * Q(k, j, 1);
-          	Q(k, j, n-1) = bc_mask[k] * Q(k, j, n-2);
-        }
+    for (j = 0; j < m; j++)  {
+      for (k = 0; k < cell_size; k++) {
+	Q(k, j, 0) = bc_mask[k] * Q(k, j, 1);
+	Q(k, j, n-1) = bc_mask[k] * Q(k, j, n-2);
       }
-
-
-
-
-
-    /* Update all volumes with the Lax-Friedrich's scheme */
-    //#pragma omp master
-    laxf_scheme_2d(Q, ffx, ffy, nFx, nFy, m, n, dx, dy, dt);
-    //printf("hello\n");
-    //exit(-1);
+    }
+     
+    /* Update all volumes with the Lax-Friedrich's scheme */     
+    laxf_scheme_2d(Q, ffx, ffy, nFx, nFy, m, n, dx, dy, dt);  
+  
   }
- }
-
 }
 
 void save_vtk(double *Q, double *x, double *y, int m, int n) {
@@ -192,27 +167,27 @@ void save_vtk(double *Q, double *x, double *y, int m, int n) {
 }
 
 /*
-  This is the main routine of the program, which allocates memory
+  This is the main routine of the program, which allocates memory 
   and setup all parameters for the problem.
-
+  
   You don't need to parallelize anything here!
-
-  However, it might be useful to change the m and n parameters
+  
+  However, it might be useful to change the m and n parameters 
   during debugging
 */
 int main(int argc, char **argv) {
-
+  
   int i, j, m, n;
   double *Q;
   double *x, *y;
   double **ffx, **nFx, **ffy, **nFy;
   double dx, dt, epsi, delta, dy, tend, tmp, stime, etime;
+  
 
-
-  /* Use m volumes in the x-direction and n volumes in the y-direction */
-  m = 100; //1000
-  n = 100;
-
+  /* Use m volumes in the x-direction and n volumes in the y-direction */    
+  m = 1000;
+  n = 1000;
+  
   /*
     epsi      Parameter used for initial condition
     delta     Parameter used for initial condition
@@ -227,7 +202,7 @@ int main(int argc, char **argv) {
   dy = (yend - ystart) / (double) n;
   dt = dx / sqrt( 9.81 * 5.0);
   tend = 0.1;
-
+  
   /* Add two ghost volumes at each side of the domain */
   m = m + 2;
   n = n + 2;
@@ -236,7 +211,7 @@ int main(int argc, char **argv) {
   Q = (double *) malloc(m * n * cell_size *  sizeof(double));
 
   x = (double *) malloc(m * sizeof(double));
-  y = (double *) malloc(n * sizeof(double));
+  y = (double *) malloc(n * sizeof(double));	
 
   /* Allocate memory for fluxes */
   ffx = (double **) malloc(cell_size * sizeof(double *));
@@ -255,7 +230,7 @@ int main(int argc, char **argv) {
     ffy[i] =  ffy[0] + i * n;
     nFy[i] =  nFy[0] + i * n;
   }
-
+    
   for (i = 0,tmp= -dx/2 + xstart; i < m; i++, tmp += dx)
     x[i] = tmp;
 
@@ -288,7 +263,7 @@ int main(int argc, char **argv) {
 
 
   /* Uncomment this line if you want visualize the result in ParaView */
-  /*save_vtk(Q, x, y, m, n);*/
+  /* save_vtk(Q, x, y, m, n); */
 
 
   free(Q);
@@ -305,5 +280,5 @@ int main(int argc, char **argv) {
   free(nFx);
   free(nFy);
 
-  return 0;
+  return 0;    
 }
