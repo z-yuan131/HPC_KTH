@@ -1,4 +1,4 @@
-cc -openmp shwater2d.c
+cc -openmp shwater2d_par.c
 
 for i in {1..16}
 do
@@ -7,7 +7,7 @@ do
 	./a.out > out_$i.txt
 done
 
-#rm -r outfile
+rm -r outfile
 mkdir outfile
 mv *.txt outfile
-#python post.py
+python post.py
