@@ -1,0 +1,3 @@
+C - mpicc
+C++ - mpiCC, mpicxx, mpic++
+FORTRAN - mpifort, mpif77, mpif90

@@ -1,0 +1,4 @@
+slurmstepd: error: execve(): /cfs/klemming/scratch/k/kezhang/HPC_KTH/assignment3/q3/./ping_pong.out: No such file or directory
+slurmstepd: error: execve(): /cfs/klemming/scratch/k/kezhang/HPC_KTH/assignment3/q3/./ping_pong.out: No such file or directory
+srun: error: nid001490: tasks 0-1: Exited with exit code 2
+srun: launch/slurm: _step_signal: Terminating StepId=364680.0
