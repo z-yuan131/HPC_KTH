@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
       return -1;
     }
 
-    double start_time, stop_time, elapsed_time;
+    double start_time, stop_time, elapsed_time, start_time1;
     start_time = MPI_Wtime();
 
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -50,6 +50,7 @@ int main(int argc, char* argv[])
     // generation is how many tree branches should be reducted
     generation = (int)(log(size) / log( 2 ));
 
+    start_time1 = MPI_Wtime();
     for (int gen = generation; gen > 0; gen--){
 
         if (rank < pow(2,gen-1)){

@@ -270,7 +270,7 @@ int main(int argc, char* argv[]){
 
 
   // main solver
-  for (int trial = 0; trial < Trials; trial++){
+  for (int trial = 0; trial < 1; trial++){
     //printf("Initializing Matrices \n")
     // init matrices with random numbers
     initialize_matrices(Nsize, A_local, B_local, C_local, temp, coord);

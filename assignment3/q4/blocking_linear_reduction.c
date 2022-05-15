@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
       return -1;
     }
 
-    double start_time, stop_time, elapsed_time;
+    double start_time, stop_time, elapsed_time, start_time1;
     start_time = MPI_Wtime();
 
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
         }
     }
 
-
+    start_time1 = MPI_Wtime();
     // reduction for blocking mpi process
     for (int i = 0; i < size; i++){
       if (i == 0){
