@@ -257,9 +257,6 @@ int main(int argc, char* argv[]){
 
 
 
-  //printf("1. Initializing Matrices \n");
-  // init matrices with random numbers
-
   Nsize = (int)(MSIZE/(int)(sqrt(size)));
 
   // define A_local,B_local,C_local,A_buff,B_buff and reduction matrix temp
@@ -272,13 +269,10 @@ int main(int argc, char* argv[]){
   double **temp = Generate(Nsize,Nsize);
 
 
-
-  //initialize_matrices(Nsize, A_local, B_local, C_local, temp, coord);
-
-
-
   // main solver
   for (int trial = 0; trial < Trials; trial++){
+    //printf("Initializing Matrices \n")
+    // init matrices with random numbers
     initialize_matrices(Nsize, A_local, B_local, C_local, temp, coord);
     for (int i = 0; i < dim[1]; i++){
       boardcast_matrices(Nsize,dim,row_comm,comm_cart,rank,row_rank,i,y_source[0],y_dest[0],A_local,B_local,A_buff,B_buff);
