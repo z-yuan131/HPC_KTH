@@ -1,0 +1,22 @@
+#!/bin/bash -l
+#SBATCH -A edu22.DD2356
+#SBATCH -J for_mat_mul
+#SBATCH -t 1:00:00
+#SBATCH -p main   ##  #shared
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=128
+#SBATCH -e error_file.e
+#SBATCH -o output.txt
+
+
+cc fox_matrix_mul.c -lm
+
+for i in {1,4,9,16,36,64,128}
+do
+
+	srun -n $i ./a.out
+	#python post.py
+	#truncate -s 0 output.txt
+done
+
+

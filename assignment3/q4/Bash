@@ -1,0 +1,36 @@
+#!/bin/bash -l
+#SBATCH -A edu22.DD2356
+#SBATCH -J Cal_pi
+#SBATCH -t 1:00:00
+#SBATCH -p shared   ##  #shared
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=128
+#SBATCH -e error_file.e
+#SBATCH -o output.txt
+
+
+
+#cc blocking_binaryTree_reduction.c   -lm
+#cc blocking_linear_reduction.c  -lm
+#cc MPI_reduce.c  -lm
+#cc nonblocking_linear_reduction.c -lm
+
+for k in {blocking_binaryTree_reduction.c,blocking_linear_reduction.c,MPI_reduce.c,nonblocking_linear_reduction.c}
+do
+	cc $k -lm
+	for i in {8,16,32,64,128,256}
+	do
+
+		for j in {1..10}
+		do
+			srun -n $i ./a.out
+		done
+		python post.py
+		truncate -s 0 output.txt
+	done
+done
+
+
+#mpicc blocking_linear_reduction.c  -lm
+#mpicc MPI_reduce.c  -lm
+#mpicc nonblocking_linear_reduction.c -lm

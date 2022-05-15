@@ -154,13 +154,13 @@ void average_result(int Nsize, int rank, int size, double **C_local, double **te
       }
     }
 
-    printf("parallel summation result is %f\n", avg/(double)(Rsize*Rsize)/Trials);
+    //printf("parallel summation result is %f\n", avg/(double)(Rsize*Rsize)/Trials);
   }
 }
 
 void average_result_for_serial_code(int Nsize, int size){
   int Rsize = (int)(Nsize * sqrt(size));
-  printf("%d\n",Rsize);
+  //printf("%d\n",Rsize);
 
   double avg = 0.0;
 
@@ -175,7 +175,7 @@ void average_result_for_serial_code(int Nsize, int size){
   }
 
 
-  printf("serial summation result is %f \n", avg/(double)(Rsize*Rsize)/Trials);
+  //printf("serial summation result is %f \n", avg/(double)(Rsize*Rsize)/Trials);
 
 }
 
@@ -273,12 +273,13 @@ int main(int argc, char* argv[]){
 
 
 
-  initialize_matrices(Nsize, A_local, B_local, C_local, temp, coord);
+  //initialize_matrices(Nsize, A_local, B_local, C_local, temp, coord);
 
 
 
   // main solver
   for (int trial = 0; trial < Trials; trial++){
+    initialize_matrices(Nsize, A_local, B_local, C_local, temp, coord);
     for (int i = 0; i < dim[1]; i++){
       boardcast_matrices(Nsize,dim,row_comm,comm_cart,rank,row_rank,i,y_source[0],y_dest[0],A_local,B_local,A_buff,B_buff);
 
@@ -306,8 +307,8 @@ int main(int argc, char* argv[]){
     average_result_for_serial_code(Nsize, size);
     stop_time = MPI_Wtime();
 
-    printf("Final elapsed time for parallel job is %f s\n", elapsed_time/(double)Trials);
-    printf("Final elapsed time for serial job is %f s\n", (stop_time - start_time)/(double)Trials);
+    printf("Final elapsed time for parallel job on %d ranks is %f \n", size, elapsed_time/(double)Trials);
+    //printf("Final elapsed time for serial job is %f \n", (stop_time - start_time)/(double)Trials);
   }
 
 

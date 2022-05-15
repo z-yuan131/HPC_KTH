@@ -78,8 +78,8 @@ int main(int argc, char* argv[])
     if (rank == 0){
       // Estimate Pi and display the result
 
-      printf("The result is %f\n", pi);
-      printf("Execution time is %f\n", elapsed_time);
+      //printf("The result is %f \n", pi);
+      printf("Execution time is %f \n", elapsed_time);
 
     }
 
